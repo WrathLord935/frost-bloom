@@ -23,9 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# Landing page iterations (kept locally, not tracked)
-src/landing-iterations/
-
 # Auto-generated gltfjsx bridge files
 Eggs.jsx
 Ice_block.jsx

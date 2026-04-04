@@ -1,0 +1,61 @@
+:root {
+  /* Existing Project Tokens */
+  --text: #6b6375;
+  --text-h: #08060d;
+  --bg: #fff;
+  --accent: #aa3bff;
+  --accent-soft: rgba(170, 59, 255, 0.1);
+  --border: #e5e4e7;
+  
+  /* Easter Fair Extension */
+  --spring-green: #2ecc71;
+  --spring-bloom: #ff79c6;
+  --winter-gray: #aab8c2;
+  --winter-mist: rgba(255, 255, 255, 0.2);
+  
+  /* Typography */
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: 'Outfit', var(--sans); /* Premium alternative */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #9ca3af;
+    --text-h: #f3f4f6;
+    --bg: #16171d;
+    --accent: #c084fc;
+    --border: #2e303a;
+  }
+}
+
+.landing-container {
+  font-family: var(--sans);
+  color: var(--text);
+  background: var(--bg);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+h1, h2 {
+  font-family: var(--heading);
+  color: var(--text-h);
+  font-weight: 700;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}

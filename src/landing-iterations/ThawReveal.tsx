@@ -51,7 +51,12 @@ const ThawReveal: React.FC<ThawRevealProps> = ({
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     const textureLoader = new THREE.TextureLoader();
     
-    const winterTex = textureLoader.load(winterSrc);
+    // We need to track the aspect ratio of the textures to mimic 'object-fit: cover'
+    let textureAspect = 1.0;
+    const winterTex = textureLoader.load(winterSrc, (tex) => {
+      textureAspect = tex.image.width / tex.image.height;
+      if (material) material.uniforms.uTextureAspect.value = textureAspect;
+    });
     const springTex = textureLoader.load(springSrc);
 
     const material = new THREE.ShaderMaterial({
@@ -61,6 +66,8 @@ const ThawReveal: React.FC<ThawRevealProps> = ({
         tMask: { value: maskTexture },
         uRefraction: { value: refraction },
         uTime: { value: 0 },
+        uAspect: { value: width / height },
+        uTextureAspect: { value: 1.0 },
       },
       vertexShader: `
         varying vec2 vUv;
@@ -74,8 +81,23 @@ const ThawReveal: React.FC<ThawRevealProps> = ({
         uniform sampler2D tMask;
         uniform float uRefraction;
         uniform float uTime;
+        uniform float uAspect;
+        uniform float uTextureAspect;
 
         void main() {
+          // OBJECT-FIT: COVER MATH
+          vec2 uv = vUv;
+          float sAspect = uAspect;
+          float tAspect = uTextureAspect;
+          
+          if (sAspect > tAspect) {
+            float scale = sAspect / tAspect;
+            uv.y = uv.y * scale - (scale - 1.0) * 0.5;
+          } else {
+            float scale = tAspect / sAspect;
+            uv.x = uv.x * scale - (scale - 1.0) * 0.5;
+          }
+
           float maskValue = texture2D(tMask, vUv).r;
           
           // CRITICAL: High-contrast smoothstep creates the 'Gooey' metaball edge
@@ -85,8 +107,8 @@ const ThawReveal: React.FC<ThawRevealProps> = ({
           float dy = dFdy(mask);
           vec2 offset = vec2(dx, dy) * uRefraction * 0.5 * sin(uTime * 2.0 + vUv.y * 12.0);
           
-          vec3 winter = texture2D(tWinter, vUv + offset * 0.3).rgb;
-          vec3 spring = texture2D(tSpring, vUv - offset * 0.6).rgb;
+          vec3 winter = texture2D(tWinter, uv + offset * 0.3).rgb;
+          vec3 spring = texture2D(tSpring, uv - offset * 0.6).rgb;
           
           gl_FragColor = vec4(mix(winter, spring, mask), 1.0);
         }
@@ -98,7 +120,8 @@ const ThawReveal: React.FC<ThawRevealProps> = ({
 
     const mouse = { x: 0, y: 0, active: false };
     const handleMouseMove = (e: MouseEvent) => {
-      const rect = containerRef.current!.getBoundingClientRect();
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
       mouse.x = (e.clientX - rect.left) / rect.width * 256;
       mouse.y = (e.clientY - rect.top) / rect.height * 256;
       mouse.active = true;
@@ -138,6 +161,7 @@ const ThawReveal: React.FC<ThawRevealProps> = ({
       const w = containerRef.current.clientWidth;
       const h = containerRef.current.clientHeight;
       renderer.setSize(w, h);
+      material.uniforms.uAspect.value = w / h;
     };
     window.addEventListener('resize', handleResize);
 

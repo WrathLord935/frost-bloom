@@ -243,7 +243,6 @@ const HomePage: React.FC = () => {
             </motion.div>
           </div>
 
-
           {/* SEGMENT 2: THE FROZEN PADLOCK */}
           {/* This sits seamlessly over the expanded UI box and reacts to the user scrolling */}
           <div className="padlock-segment">
@@ -581,92 +580,16 @@ const HomePage: React.FC = () => {
           font-weight: 400;
         }
 
-        /* 🚀 SEGMENT 5: CTA */
-        .cta-segment {
-          position: absolute;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          padding: 60px 40px;
-          z-index: 55;
-          pointer-events: none; /* Never blocks clicks when invisible */
-        }
-
-        .cta-overline {
-          font-family: 'Space Grotesk', sans-serif;
-          font-size: 0.9rem;
-          font-weight: 700;
-          letter-spacing: 4px;
-          text-transform: uppercase;
-          color: #a0d8ef;
-          margin: 0 0 20px 0;
-        }
-
-        .cta-headline {
-          font-family: 'Space Grotesk', sans-serif;
-          font-size: clamp(2.5rem, 6vw, 5rem);
-          font-weight: 800;
-          line-height: 1.1;
-          letter-spacing: -2px;
-          margin: 0 0 24px 0;
-          background: linear-gradient(135deg, #a0d8ef 0%, #4ade80 60%, #fde68a 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          filter: drop-shadow(0 4px 20px rgba(74, 222, 128, 0.5));
-        }
-
-        .cta-subtext {
-          font-family: 'Inter', sans-serif;
-          font-size: 1.15rem;
-          color: rgba(255, 255, 255, 0.7);
-          max-width: 520px;
-          line-height: 1.7;
-          margin: 0 0 48px 0;
-        }
-
-        .play-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 12px;
-          padding: 20px 56px;
-          font-family: 'Space Grotesk', sans-serif;
-          font-size: 1.2rem;
-          font-weight: 800;
-          letter-spacing: 1px;
-          color: #0f172a;
-          background: linear-gradient(135deg, #4ade80, #a0d8ef);
-          border: none;
-          border-radius: 999px;
-          cursor: pointer;
-          box-shadow: 0 0 40px rgba(74, 222, 128, 0.6), 0 20px 60px rgba(0,0,0,0.4);
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .play-btn:hover {
-          transform: translateY(-4px) scale(1.04);
-          box-shadow: 0 0 70px rgba(74, 222, 128, 0.9), 0 30px 80px rgba(0,0,0,0.5);
-        }
-
-        .play-btn-icon {
-          font-size: 1.5rem;
-        }
-
         /* ☄️ THE BALLISTIC OBJECT */
         .gallery-object {
           position: absolute;
-          /* Centered inside the visual bay */
           left: 50%; 
           top: 50%;
-          margin-top: -100px; /* Half of 200px */
+          margin-top: -100px;
           margin-left: -100px;
           width: 200px;
           height: 200px;
           z-index: 100;
-          overflow: visible;
-          /* Ensure no center positioning conflicts */
           display: flex;
           align-items: center;
           justify-content: center;
@@ -678,12 +601,6 @@ const HomePage: React.FC = () => {
           border-radius: 20px;
         }
 
-        .frostbloom-iteration {
-          position: relative;
-          width: 100vw;
-          background: #000;
-        }
-
         /* 👑 GLOBAL HEADER */
         .frostbloom-global-header {
           position: fixed;
@@ -693,34 +610,32 @@ const HomePage: React.FC = () => {
           padding: 30px 0;
           text-align: center;
           z-index: 100;
-          pointer-events: none; /* Let clicks pass through to the blob */
+          pointer-events: none;
         }
 
         .header-title {
           margin: 0;
-          font-size: 3.5rem; /* Significantly larger */
+          font-size: 3.5rem;
           font-family: 'Space Grotesk', sans-serif;
           font-weight: 700;
           letter-spacing: -2px;
-          /* Icy Blue to Brilliant Grass Green Gradient */
           background: linear-gradient(90deg, #a0d8ef 0%, #4ade80 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
-          /* 3D Popout Effect */
-          filter: drop-shadow(0px 4px 0px #1b5e20) drop-shadow(0px 8px 15px rgba(0,0,0,0.8));
-          padding: 0.1em 0; /* Prevents webkit clip from sliding tops off large fonts */
+          filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.8));
+          padding: 0.1em 0;
         }
 
         .header-tagline {
           margin: 0;
-          font-size: 1.5rem; /* Larger */
-          font-family: 'Space Grotesk', sans-serif; /* Enforcing Space Grotesk here too */
+          font-size: 1.5rem;
+          font-family: 'Space Grotesk', sans-serif;
           font-weight: 700;
           color: #ffffff;
           letter-spacing: 6px;
           text-transform: uppercase;
           text-shadow: 0 4px 8px rgba(0,0,0,0.8);
-          margin-top: -10px; /* Pulls closer to the massive 3D title */
+          margin-top: -10px;
         }
 
         /* 🎢 SCROLL LOGIC */
@@ -757,7 +672,6 @@ const HomePage: React.FC = () => {
 
         .ui-stack-container {
           position: relative;
-          /* Width and height are now controlled by Framer Motion */
           display: grid;
           place-items: center;
           pointer-events: auto;
@@ -772,47 +686,31 @@ const HomePage: React.FC = () => {
           padding: 60px;
           border-radius: 50px;
           backdrop-filter: blur(25px);
-          overflow: hidden;
           display: flex;
           flex-direction: column;
           justify-content: center;
           box-sizing: border-box;
-          mask-repeat: no-repeat;
-          -webkit-mask-repeat: no-repeat;
-          mask-size: 100% 100%;
-          -webkit-mask-size: 100% 100%;
         }
 
         .frozen-layer { background: rgba(180, 220, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); color: #eef8ff; }
-
-        .warm-layer { background: transparent; border: 2px solid rgba(253, 200, 100, 0.5); color: #fff; z-index: 2; box-shadow: 0 0 100px rgba(255, 200, 50, 0.15) inset; }
+        .warm-layer { background: transparent; border: 2px solid rgba(253, 200, 100, 0.5); color: #fff; z-index: 2; }
 
         .tag-frozen { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
         .tag-warm { background: linear-gradient(90deg, #ff9a9e 0%, #fecfef 100%); color: #8b4513; }
 
-        .text-frozen { color: #fff; opacity: 1.0; }
+        .text-frozen { color: #fff; }
         .text-warm { color: #ffd700; text-shadow: 0 0 25px rgba(255, 150, 50, 0.7); }
 
         .sub-heading { font-weight: 400; font-size: 1.4rem; margin-top: -15px; margin-bottom: 25px; line-height: 1.4; }
-        .sub-frozen { color: rgba(255,255,255,0.7); }
-        .sub-warm { color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
-
-        .p-frozen { color: rgba(255,255,255,0.8); font-size: 1.1rem; }
-        .p-warm { color: #fff; font-size: 1.1rem; }
-
-        .btn-frozen { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 18px 40px; border-radius: 99px; cursor: pointer; }
-        .btn-warm { background: linear-gradient(90deg, #a0d8ef 0%, #4ade80 100%); color: #000; border: none; padding: 18px 40px; font-weight: 800; border-radius: 99px; cursor: pointer; box-shadow: 0 10px 30px rgba(74, 222, 128, 0.4); }
-
-        .action-row { margin-top: 32px; }
         h1 { font-size: 3.5rem; margin-bottom: 24px; line-height: 1.1; letter-spacing: -2px; }
 
-        /* 🔒 SEGMENT 2 PADLOCK */
+        /* 🔒 SEGMENT 2 PADLOCK & JACK */
         .padlock-segment {
           position: absolute;
           inset: 0;
           display: grid;
           place-items: center;
-          z-index: 50; /* Sits above standard UI box */
+          z-index: 50;
           pointer-events: none;
         }
 
@@ -823,39 +721,33 @@ const HomePage: React.FC = () => {
         }
 
         .padlock-image {
-          width: 35vh; /* Reduced size based on user request */
+          width: 35vh;
           height: 35vh;
           background-size: contain;
           background-position: center;
           background-repeat: no-repeat;
+          filter: drop-shadow(0 0 30px rgba(186, 230, 253, 0.3));
         }
         
         .broken-image {
           position: absolute;
-          inset: 0; /* Overlays perfectly on top of the intact lock */
+          inset: 0;
+          filter: drop-shadow(0 0 60px rgba(255, 255, 255, 0.4)) blur(2px);
         }
 
         .shatter-flash {
           position: absolute;
           inset: 0;
-          background: radial-gradient(circle at center, rgba(255, 255, 255, 1) 0%, rgba(200, 240, 255, 0.8) 30%, rgba(255, 255, 255, 0) 70%);
+          background: radial-gradient(circle at center, rgba(255, 255, 255, 1) 0%, rgba(200, 240, 255, 0) 70%);
           z-index: -1;
-          filter: blur(10px);
         }
         
         .padlock-text {
           color: rgba(255, 255, 255, 0.7);
-          font-size: 1.5rem;
+          font-family: 'Space Grotesk', sans-serif;
+          font-size: 1.1rem;
           letter-spacing: 8px;
           text-transform: uppercase;
-          text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-          animation: pulse-text 2s infinite ease-in-out;
-          margin: 0;
-        }
-
-        @keyframes pulse-text {
-          0%, 100% { opacity: 0.5; }
-          50% { opacity: 1; }
         }
 
         /* 📖 SEGMENT 3 LORE */
@@ -864,7 +756,7 @@ const HomePage: React.FC = () => {
           inset: 0;
           display: grid;
           place-items: center;
-          z-index: 40; /* Below Padlock, inside glass */
+          z-index: 40;
           pointer-events: none;
         }
 
@@ -872,47 +764,28 @@ const HomePage: React.FC = () => {
           position: absolute;
           max-width: 900px;
           text-align: center;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 1.5rem;
-          /* Dark radial halo to separate text from the busy background */
           background: radial-gradient(ellipse at center, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 70%);
           padding: 60px;
-          border-radius: 40px;
         }
 
         .lore-title {
-          font-family: 'Garamond', serif;
-          font-size: 3.5rem;
-          font-weight: 800;
+          font-family: 'Space Grotesk', sans-serif;
+          font-size: 1.2rem;
           letter-spacing: 6px;
           text-transform: uppercase;
-          margin: 0;
-          line-height: 1.3;
-          /* Beautiful Icy Metallic effect restored */
-          background: linear-gradient(90deg, #ffffff 0%, #a0d8ef 50%, #ffffff 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          /* Padding completely prevents WebKit from slicing the top off the letters */
-          padding: 0.2em 0;
-          /* Use drop-shadow filter instead of text-shadow for background-clipped text */
-          filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.9));
+          color: #a0d8ef;
+          margin-bottom: 20px;
         }
 
         .lore-text {
-          font-family: 'Garamond', serif;
           font-size: 2rem;
-          color: rgba(255, 255, 255, 0.95);
+          color: #fff;
           font-weight: 300;
-          letter-spacing: 2px;
           line-height: 1.6;
-          /* Extremely strong double outer shadow for maximum background contrast */
-          margin: 0;
+          font-style: italic;
         }
 
         /* ❄️ SEGMENT 5: ABOUT SECTION */
-        /* ❄️ SEGMENT 5: ABOUT SECTION (Horizontal Refinement) */
         .about-segment {
           position: absolute;
           inset: 0;
@@ -921,103 +794,75 @@ const HomePage: React.FC = () => {
           justify-content: center;
           z-index: 55;
           pointer-events: none;
-          padding: 0 40px;
         }
 
         .about-card {
-          width: 100%;
-          max-width: 900px;
-          padding: 50px 60px;
+          width: 900px;
+          padding: 60px;
           background: rgba(15, 23, 42, 0.4);
           backdrop-filter: blur(40px);
-          border: 1px solid rgba(186, 230, 253, 0.15);
-          border-radius: 50px;
-          box-shadow: 
-            0 40px 120px rgba(0, 0, 0, 0.6),
-            inset 0 1px 2px rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(186, 230, 253, 0.2);
+          border-radius: 40px;
+          box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6);
           pointer-events: auto;
-          overflow: hidden;
         }
 
         .about-card-horizontal {
           display: flex;
           align-items: center;
           gap: 60px;
-          text-align: left;
-        }
-
-        @media (max-width: 768px) {
-          .about-card-horizontal {
-            flex-direction: column;
-            gap: 30px;
-            text-align: center;
-          }
         }
 
         .creator-profile-outer {
           position: relative;
-          width: 160px;
-          height: 160px;
+          width: 220px;
+          height: 220px;
           flex-shrink: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
         }
 
         .creator-profile-glow {
           position: absolute;
-          inset: -10px;
-          background: linear-gradient(135deg, #a0d8ef77, #4ade8077);
-          border-radius: 50%;
+          inset: -15px;
+          background: radial-gradient(circle, rgba(186, 230, 253, 0.4), transparent 70%);
           filter: blur(20px);
           animation: profile-pulse 4s infinite ease-in-out;
-        }
-
-        @keyframes profile-pulse {
-          0%, 100% { transform: scale(1); opacity: 0.4; }
-          50% { transform: scale(1.1); opacity: 0.7; }
         }
 
         .creator-profile-img {
           position: relative;
           width: 100%;
           height: 100%;
-          background: rgba(20, 28, 48, 0.6);
-          border: 1px solid rgba(186, 230, 253, 0.5);
           border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          /* Multi-layered glow for icy aura */
-          box-shadow: 
-            0 10px 40px rgba(0,0,0,0.5),
-            0 0 25px rgba(186, 230, 253, 0.25),
-            inset 0 0 15px rgba(255, 255, 255, 0.1);
-          overflow: hidden; /* Perfect round crop */
-          z-index: 2;
+          border: 2px solid rgba(186, 230, 253, 0.5);
+          overflow: hidden;
+          background: #0f172a;
+          box-shadow: 0 0 30px rgba(186, 230, 253, 0.3);
         }
 
         .creator-content-right {
           flex-grow: 1;
+          text-align: left;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
         }
 
         .creator-label {
           display: block;
           font-family: 'Space Grotesk', sans-serif;
           text-transform: uppercase;
-          letter-spacing: 5px;
-          font-size: 0.85rem;
+          letter-spacing: 4px;
+          font-size: 0.9rem;
           color: #a0d8ef;
-          opacity: 0.6;
-          margin-bottom: 12px;
+          margin-bottom: -15px; /* Pull header closer to name */
         }
 
         .creator-name {
           font-family: 'Space Grotesk', sans-serif;
-          font-size: 2.5rem;
+          font-size: 2.4rem;
           font-weight: 700;
           color: #fff;
-          margin: 0 0 36px 0;
+          margin: 0;
           letter-spacing: -1px;
           line-height: 1.1;
         }
@@ -1031,72 +876,91 @@ const HomePage: React.FC = () => {
         .social-btn {
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: 10px;
           padding: 12px 24px;
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.08);
           border-radius: 100px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
           color: rgba(255, 255, 255, 0.7);
           text-decoration: none;
           font-family: 'Inter', sans-serif;
-          font-size: 0.95rem;
+          font-size: 0.9rem;
           font-weight: 600;
-          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: all 0.3s ease;
         }
 
         .social-btn svg {
           width: 20px;
           height: 20px;
-          transition: transform 0.3s ease;
         }
 
         .social-btn:hover {
-          background: rgba(255, 255, 255, 0.1);
-          border-color: rgba(255, 255, 255, 0.2);
-          color: #fff;
-          transform: translateY(-3px);
-          box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-        }
-
-        .social-btn:hover svg {
-          transform: scale(1.15) rotate(-5deg);
-        }
-
-        /* Premium Brand Colors on Hover */
-        .github-btn:hover { border-color: rgba(240, 98, 146, 0.6); color: #f06292; }
-        .linkedin-btn:hover { border-color: rgba(0, 119, 181, 0.6); color: #0077b5; }
-        .instagram-btn:hover { border-color: rgba(228, 64, 95, 0.6); color: #e4405f; }
-        .discord-btn:hover { border-color: rgba(88, 101, 242, 0.6); color: #5865f2; }
-
-          color: #bae6fd;
-          transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-          text-decoration: none;
-        }
-
-        .social-link svg {
-          width: 24px;
-          height: 24px;
-        }
-
-        .social-link:hover {
-          transform: translateY(-5px);
           background: rgba(186, 230, 253, 0.2);
-          border-color: #bae6fd;
+          border-color: rgba(186, 230, 253, 0.4);
           color: #fff;
-          box-shadow: 0 10px 25px rgba(160, 216, 239, 0.3);
+          transform: translateY(-2px);
         }
 
-        .discord-link {
-          width: auto;
-          padding: 0 20px;
-          gap: 12px;
+        .discord-btn:hover { background: #5865f233; border-color: #5865f288; color: #5865f2; }
+
+        /* 🚀 SEGMENT 6: CTA */
+        .cta-segment {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          z-index: 100;
+          pointer-events: none;
         }
 
-        .discord-handle {
+        .cta-overline {
           font-family: 'Space Grotesk', sans-serif;
-          font-weight: 700;
-          font-size: 0.9rem;
-          letter-spacing: 1px;
+          text-transform: uppercase;
+          letter-spacing: 5px;
+          color: #a0d8ef;
+          margin-bottom: 20px;
+        }
+
+        .cta-headline {
+          font-family: 'Space Grotesk', sans-serif;
+          font-size: clamp(3rem, 7vw, 5rem);
+          line-height: 1;
+          color: #fff;
+          margin-bottom: 30px;
+          text-shadow: 0 0 30px rgba(186, 230, 253, 0.3);
+        }
+
+        .cta-subtext {
+          font-size: 1.2rem;
+          color: rgba(255,255,255,0.7);
+          margin-bottom: 50px;
+          max-width: 600px;
+        }
+
+        .play-btn {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          padding: 24px 60px;
+          font-size: 1.3rem;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          color: #0f172a;
+          background: #bae6fd;
+          border-radius: 100px;
+          cursor: pointer;
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: 0 10px 40px rgba(186, 230, 253, 0.4);
+          border: none;
+        }
+
+        .play-btn:hover {
+          transform: translateY(-5px) scale(1.05);
+          background: #fff;
+          box-shadow: 0 20px 60px rgba(186, 230, 253, 0.6);
         }
       `}</style>
     </div>

@@ -85,24 +85,26 @@ const ThawReveal: React.FC<ThawRevealProps> = ({
         uniform float uTextureAspect;
 
         void main() {
-          // OBJECT-FIT: COVER MATH
           vec2 uv = vUv;
+          
           float sAspect = uAspect;
           float tAspect = uTextureAspect;
-          
-          if (sAspect > tAspect) {
-            float scale = sAspect / tAspect;
-            uv.y = uv.y * scale - (scale - 1.0) * 0.5;
-          } else {
-            float scale = tAspect / sAspect;
-            uv.x = uv.x * scale - (scale - 1.0) * 0.5;
+
+          // Object-fit: cover logic
+          if (sAspect > 0.0 && tAspect > 0.0) {
+            if (sAspect > tAspect) {
+              float zoom = tAspect / sAspect;
+              uv.y = (vUv.y - 0.5) * zoom + 0.5;
+            } else {
+              float zoom = sAspect / tAspect;
+              uv.x = (vUv.x - 0.5) * zoom + 0.5;
+            }
           }
 
           float maskValue = texture2D(tMask, vUv).r;
-          
-          // CRITICAL: High-contrast smoothstep creates the 'Gooey' metaball edge
           float mask = smoothstep(0.4, 0.6, maskValue);
           
+          // Derivatives for refraction
           float dx = dFdx(mask);
           float dy = dFdy(mask);
           vec2 offset = vec2(dx, dy) * uRefraction * 0.5 * sin(uTime * 2.0 + vUv.y * 12.0);

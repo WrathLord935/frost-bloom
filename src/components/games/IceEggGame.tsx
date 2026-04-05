@@ -121,11 +121,11 @@ const IceEggGame: React.FC<IceEggGameProps> = ({
       const obj = prev.find(o => o.id === id);
       if (!obj || obj.cracked) return prev;
 
-      // [BUG FIX]: Increments set to 0.5 as each click is registering twice in this environment
+      // [BUG FIX]: Increments set to 1
       if (obj.type === 'egg') {
-        setScore(s => s + 0.5);
+        setScore(s => s + 1);
       } else {
-        setHealth(h => h - 0.5);
+        setHealth(h => h - 1);
       }
 
       return prev.map(o => o.id === id ? { ...o, cracked: true, velocity: [0, -0.01, 0] } : o);

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
 import HangmanGame from '../components/games/HangmanGame';
 import EasterHuntGame from '../components/games/EasterHuntGame';
 import IceEggGame from '../components/games/IceEggGame';
@@ -31,7 +30,6 @@ const NARRATIVE_STAGES = [
 // -------------------------------------------------------------------
 
 const FairPage: React.FC = () => {
-  const navigate = useNavigate();
   const [activeGame, setActiveGame] = useState<'hangman' | 'egghunt' | 'iceegg' | null>(null);
   const [completedGames, setCompletedGames] = useState<Set<string>>(new Set());
   const [showFinalWin, setShowFinalWin] = useState(false);
@@ -427,7 +425,7 @@ const FairPage: React.FC = () => {
             animate={{ opacity: 1, x: 0 }}
             whileHover={{ scale: 1.05, background: 'rgba(15, 23, 42, 0.8)' }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => navigate('/home')}
+            onClick={() => window.location.href = 'https://frost-bloom-home.vercel.app/'}
             style={{
               position: 'fixed',
               top: '32px',

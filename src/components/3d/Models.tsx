@@ -1,19 +1,22 @@
-import { useRef, useMemo } from 'react'
+import { useRef, useMemo, useEffect } from 'react'
 import { useGLTF, Center } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
 // [FIX] GLTF textures must have flipY=false to avoid WebGL texSubImage deprecation warnings
-// Drei's useGLTF usually handles this but we'll ensure it here
+// Targeted and safe traversal of specific texture map properties only
 const fixGltfTextures = (gltf: any) => {
   if (!gltf?.scene) return
+  const textureMaps = ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'emissiveMap', 'aoMap', 'specularMap', 'alphaMap']
+
   gltf.scene.traverse((child: any) => {
     if (child.isMesh && child.material) {
-      const materials = Array.isArray(child.material) ? child.material : [child.material]
-      materials.forEach((mat: any) => {
-        Object.keys(mat).forEach(prop => {
+      const mats = Array.isArray(child.material) ? child.material : [child.material]
+      mats.forEach((mat: any) => {
+        textureMaps.forEach(prop => {
           if (mat[prop] && mat[prop].isTexture) {
             mat[prop].flipY = false
+            mat[prop].needsUpdate = true
           }
         })
       })
@@ -28,7 +31,11 @@ export function HangmanModel({ wrongGuesses = 0, ...props }: { wrongGuesses?: nu
   // Path points to public/wooden_alphabet_blocks.glb
   const gltf = useGLTF('/wooden_alphabet_blocks.glb') as any
   const { nodes, materials } = gltf
-  fixGltfTextures(gltf)
+  
+  // Apply fix once per GLTF load
+  useEffect(() => {
+    fixGltfTextures(gltf)
+  }, [gltf])
   const group = useRef<THREE.Group>(null)
 
   const timeRef = useRef(0)
@@ -112,7 +119,9 @@ export function EggModel(props: any) {
   // Path points to public/eggs.glb
   const gltf = useGLTF('/eggs.glb') as any
   const { nodes, materials } = gltf
-  fixGltfTextures(gltf)
+  useEffect(() => {
+    fixGltfTextures(gltf)
+  }, [gltf])
   const group = useRef<THREE.Group>(null)
 
   const timeRef = useRef(0)
@@ -148,7 +157,9 @@ export function IceCubeModel(props: any) {
   // Path points to public/ice_cube.glb
   const gltf = useGLTF('/ice_cube.glb') as any
   const { nodes, materials } = gltf
-  fixGltfTextures(gltf)
+  useEffect(() => {
+    fixGltfTextures(gltf)
+  }, [gltf])
   const group = useRef<THREE.Group>(null)
 
   useFrame(() => {

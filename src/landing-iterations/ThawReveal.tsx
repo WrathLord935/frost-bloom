@@ -29,7 +29,13 @@ const ThawReveal: React.FC<ThawRevealProps> = ({
     if (!canvasRef.current || !containerRef.current) return;
 
     const canvas = canvasRef.current;
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+    const renderer = new THREE.WebGLRenderer({ 
+      canvas, 
+      alpha: true, 
+      antialias: false,
+      powerPreference: 'high-performance'
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap at 2 for performance
     const width = containerRef.current.clientWidth;
     const height = containerRef.current.clientHeight;
     renderer.setSize(width, height);
@@ -162,6 +168,7 @@ const ThawReveal: React.FC<ThawRevealProps> = ({
       if (!containerRef.current) return;
       const w = containerRef.current.clientWidth;
       const h = containerRef.current.clientHeight;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setSize(w, h);
       material.uniforms.uAspect.value = w / h;
     };

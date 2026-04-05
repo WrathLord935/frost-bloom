@@ -1,24 +1,47 @@
-import { useRef } from 'react'
+import { useRef, useMemo } from 'react'
 import { useGLTF, Center } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+
+// [FIX] GLTF textures must have flipY=false to avoid WebGL texSubImage deprecation warnings
+// Drei's useGLTF usually handles this but we'll ensure it here
+const fixGltfTextures = (gltf: any) => {
+  if (!gltf?.scene) return
+  gltf.scene.traverse((child: any) => {
+    if (child.isMesh && child.material) {
+      const materials = Array.isArray(child.material) ? child.material : [child.material]
+      materials.forEach((mat: any) => {
+        Object.keys(mat).forEach(prop => {
+          if (mat[prop] && mat[prop].isTexture) {
+            mat[prop].flipY = false
+          }
+        })
+      })
+    }
+  })
+}
 
 /* 
   ALPHABET BLOCK STACK (J-A-C-K)
 */
 export function HangmanModel({ wrongGuesses = 0, ...props }: { wrongGuesses?: number } & any) {
   // Path points to public/wooden_alphabet_blocks.glb
-  const { nodes, materials } = useGLTF('/wooden_alphabet_blocks.glb') as any
+  const gltf = useGLTF('/wooden_alphabet_blocks.glb') as any
+  const { nodes, materials } = gltf
+  fixGltfTextures(gltf)
   const group = useRef<THREE.Group>(null)
 
-  useFrame((state) => {
+  const timeRef = useRef(0)
+
+  useFrame((_state, delta) => {
     if (group.current) {
+      timeRef.current += delta
       group.current.rotation.y += 0.005
       
       // Shake effect when close to losing
       if (wrongGuesses >= 4) {
-        group.current.position.x = Math.sin(state.clock.elapsedTime * 20) * 0.02
-        group.current.position.z = Math.cos(state.clock.elapsedTime * 15) * 0.02
+        group.current.position.x = Math.sin(timeRef.current * 20) * 0.02
+        group.current.position.z = Math.cos(timeRef.current * 15) * 0.02
       } else {
         group.current.position.x = 0
         group.current.position.z = 0
@@ -34,12 +57,16 @@ export function HangmanModel({ wrongGuesses = 0, ...props }: { wrongGuesses?: nu
   }
 
   // Dynamic color shift based on wrong guesses (turns icy)
-  const blockMaterial = materials.DCletterblocks.clone()
-  if (wrongGuesses > 0) {
-    const frostiness = wrongGuesses / 6
-    blockMaterial.emissive = new THREE.Color(0x00a0ef).multiplyScalar(frostiness)
-    blockMaterial.emissiveIntensity = frostiness * 2
-  }
+  // [FIX] Memoize to prevent redundant shader recompilation and precision warnings
+  const blockMaterial = useMemo(() => {
+    const mat = materials.DCletterblocks.clone()
+    if (wrongGuesses > 0) {
+      const frostiness = wrongGuesses / 6
+      mat.emissive = new THREE.Color(0x00a0ef).multiplyScalar(frostiness)
+      mat.emissiveIntensity = frostiness * 2
+    }
+    return mat
+  }, [materials.DCletterblocks, wrongGuesses])
 
   return (
     <group ref={group} {...props} dispose={null} scale={0.07}>
@@ -83,14 +110,19 @@ export function HangmanModel({ wrongGuesses = 0, ...props }: { wrongGuesses?: nu
 */
 export function EggModel(props: any) {
   // Path points to public/eggs.glb
-  const { nodes, materials } = useGLTF('/eggs.glb') as any
+  const gltf = useGLTF('/eggs.glb') as any
+  const { nodes, materials } = gltf
+  fixGltfTextures(gltf)
   const group = useRef<THREE.Group>(null)
 
-  useFrame((state) => {
+  const timeRef = useRef(0)
+
+  useFrame((_state, delta) => {
     if (group.current) {
+      timeRef.current += delta
       // Spinning on the Y axis, but we'll tilt the whole group below
       group.current.rotation.y += 0.015
-      group.current.position.y = Math.sin(state.clock.elapsedTime) * 0.05
+      group.current.position.y = Math.sin(timeRef.current) * 0.05
     }
   })
 
@@ -114,7 +146,9 @@ export function EggModel(props: any) {
 */
 export function IceCubeModel(props: any) {
   // Path points to public/ice_cube.glb
-  const { nodes, materials } = useGLTF('/ice_cube.glb') as any
+  const gltf = useGLTF('/ice_cube.glb') as any
+  const { nodes, materials } = gltf
+  fixGltfTextures(gltf)
   const group = useRef<THREE.Group>(null)
 
   useFrame(() => {

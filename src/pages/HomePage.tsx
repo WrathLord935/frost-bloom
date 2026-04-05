@@ -1,11 +1,62 @@
 import React, { useRef, useEffect, useState } from 'react';
 import ThawReveal from '../landing-iterations/ThawReveal';
-import { motion, useMotionValue, useSpring, useScroll, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useScroll, useTransform, useInView } from 'framer-motion';
 import { Canvas } from '@react-three/fiber';
 import { Environment, ContactShadows } from '@react-three/drei';
 import { HangmanModel, EggModel, IceCubeModel } from '../components/3d/Models';
 import { useNavigate } from 'react-router-dom';
 import '../landing-iterations/shared-styles.css';
+
+/**
+ * Shared content inside the expanding container
+ * [OPTIMIZATION] Moved outside to prevent recreation on every render
+ */
+const ContentInner = React.memo(({ isWarm, textOpacity }: { isWarm: boolean, textOpacity: any }) => (
+  <motion.div className="ui-inner" style={{ opacity: textOpacity }}>
+    <span className={`concept-tag ${isWarm ? 'tag-warm' : 'tag-frozen'}`}>
+      {isWarm ? "Spring's Warmth" : "Frozen Silence"}
+    </span>
+    <h1 className={isWarm ? 'text-warm' : 'text-frozen'}>
+      {isWarm ? "The Ice is Melting" : "The Village is Asleep"}
+    </h1>
+
+    <h3 className={`sub-heading ${isWarm ? 'sub-warm' : 'sub-frozen'}`}>
+      {isWarm ? "Witness the rebirth of the valley as blossoms break through the ice." : "A world locked away by the winter wind."}
+    </h3>
+
+    <p className={isWarm ? 'p-warm' : 'p-frozen'}>
+      Every movement brings life back to the village.
+      The frozen landscape is beginning to breathe again.
+    </p>
+  </motion.div>
+));
+
+/**
+ * Gallery Panel helper to only render 3D content when in view
+ */
+const GalleryPanel = ({ opacity, gameLabel, headline, description, children }: any) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: false, amount: 0.1 });
+
+  return (
+    <motion.div ref={ref} className="gallery-panel" style={{ opacity }}>
+      <div className="panel-content">
+        <div className="panel-card">
+          <div className="card-visual-bay">
+            <div className="gallery-object">
+              {isInView ? children : null}
+            </div>
+          </div>
+          <div className="card-text-area">
+            <span className="game-label">{gameLabel}</span>
+            <h3>{headline}</h3>
+            <p>{description}</p>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 /**
  * FrostBloom Landing Page
@@ -138,9 +189,6 @@ const HomePage: React.FC = () => {
   const panel3Opacity = 1;
 
   // 3D objects static in slots (no whiplash)
-  const game1X = 0; const game1Y = 0; const game1Rotate = 0; const game1Opacity = 1;
-  const game2X = 0; const game2Y = 0; const game2Rotate = 0; const game2Opacity = 1;
-  const game3X = 0; const game3Y = 0; const game3Rotate = 0; const game3Opacity = 1;
 
   // SEGMENT 5: ABOUT (Scroll: 9.5vh -> 11.5vh)
   const aboutOpacity = useTransform(scrollY, [vh * 9.5, vh * 9.8, vh * 11.2, vh * 11.5], [0, 1, 1, 0]);
@@ -151,26 +199,6 @@ const HomePage: React.FC = () => {
   const ctaOpacity = useTransform(scrollY, [vh * 11.5, vh * 12.0], [0, 1]);
   const ctaY = useTransform(scrollY, [vh * 11.5, vh * 12.0], [60, 0]);
 
-  // Shared content inside the expanding container
-  const ContentInner = ({ isWarm }: { isWarm: boolean }) => (
-    <motion.div className="ui-inner" style={{ opacity: textOpacity }}>
-      <span className={`concept-tag ${isWarm ? 'tag-warm' : 'tag-frozen'}`}>
-        {isWarm ? "Spring's Warmth" : "Frozen Silence"}
-      </span>
-      <h1 className={isWarm ? 'text-warm' : 'text-frozen'}>
-        {isWarm ? "The Ice is Melting" : "The Village is Asleep"}
-      </h1>
-
-      <h3 className={`sub-heading ${isWarm ? 'sub-warm' : 'sub-frozen'}`}>
-        {isWarm ? "Witness the rebirth of the valley as blossoms break through the ice." : "A world locked away by the winter wind."}
-      </h3>
-
-      <p className={isWarm ? 'p-warm' : 'p-frozen'}>
-        Every movement brings life back to the village.
-        The frozen landscape is beginning to breathe again.
-      </p>
-    </motion.div>
-  );
 
   return (
     <div className="landing-container landing-page frostbloom-iteration">
@@ -222,7 +250,7 @@ const HomePage: React.FC = () => {
                   "--br": blobRadius,
                 }}
               >
-                <ContentInner isWarm={false} />
+                <ContentInner isWarm={false} textOpacity={textOpacity} />
               </motion.div>
 
               {/* [LAYER 2]: Spring (Warm Reveal - Appears) */}
@@ -238,7 +266,7 @@ const HomePage: React.FC = () => {
                   "--br": blobRadius,
                 }}
               >
-                <ContentInner isWarm={true} />
+                <ContentInner isWarm={true} textOpacity={textOpacity} />
               </motion.div>
             </motion.div>
           </div>
@@ -327,86 +355,56 @@ const HomePage: React.FC = () => {
             <motion.div className="horizontal-gallery-track" style={{ x: galleryTranslateX }}>
 
               {/* PANEL 1: HANGMAN */}
-              <motion.div className="gallery-panel" style={{ opacity: panel1Opacity }}>
-                <div className="panel-content">
-                  <div className="panel-card">
-                    <div className="card-visual-bay">
-                      <motion.div
-                        className="gallery-object"
-                        style={{ x: game1X, y: game1Y, rotate: game1Rotate, opacity: game1Opacity }}
-                      >
-                        <Canvas camera={{ position: [0, 0, 5], fov: 40 }}>
-                          <ambientLight intensity={1.5} />
-                          <pointLight position={[10, 10, 10]} intensity={2} />
-                          <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={2} />
-                          <HangmanModel />
-                          <Environment preset="city" />
-                          <ContactShadows position={[0, -1.2, 0]} opacity={0.6} scale={10} blur={2} far={10} />
-                        </Canvas>
-                      </motion.div>
-                    </div>
-                    <div className="card-text-area">
-                      <span className="game-label">Game 1: Hangman</span>
-                      <h3>Hanging by a Thread</h3>
-                      <p>"Guess the hidden Easter word before the figure is complete. Each wrong guess brings you closer to defeat. Think carefully—Jack's counting on you."</p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+              <GalleryPanel
+                id="panel-1"
+                opacity={panel1Opacity}
+                gameLabel="Game 1: Hangman"
+                headline="Hanging by a Thread"
+                description='"Guess the hidden Easter word before the figure is complete. Each wrong guess brings you closer to defeat. Think carefully—Jack&apos;s counting on you."'
+              >
+                <Canvas camera={{ position: [0, 0, 5], fov: 40 }} dpr={[1, 2]}>
+                  <ambientLight intensity={1.5} />
+                  <pointLight position={[10, 10, 10]} intensity={2} />
+                  <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={2} />
+                  <HangmanModel />
+                  <Environment preset="city" />
+                  <ContactShadows position={[0, -1.2, 0]} opacity={0.6} scale={10} blur={2} far={10} />
+                </Canvas>
+              </GalleryPanel>
 
               {/* PANEL 2: EASTER HUNT */}
-              <motion.div className="gallery-panel" style={{ opacity: panel2Opacity }}>
-                <div className="panel-content">
-                  <div className="panel-card">
-                    <div className="card-visual-bay">
-                      <motion.div
-                        className="gallery-object"
-                        style={{ x: game2X, y: game2Y, rotate: game2Rotate, opacity: game2Opacity }}
-                      >
-                        <Canvas camera={{ position: [0, 0, 5], fov: 35 }}>
-                          <ambientLight intensity={1.5} />
-                          <pointLight position={[10, 10, 10]} intensity={2} color="#ff9a9e" />
-                          <EggModel />
-                          <Environment preset="warehouse" />
-                          <ContactShadows position={[0, -1.2, 0]} opacity={0.6} scale={10} blur={2.5} far={10} />
-                        </Canvas>
-                      </motion.div>
-                    </div>
-                    <div className="card-text-area">
-                      <span className="game-label">Game 2: Easter Hunt</span>
-                      <h3>Eggs-traordinary Search</h3>
-                      <p>"Five eggs are hidden in the Easter Fair scene. Find them all before time runs out. Keep your eyes sharp—some eggs are harder to spot than others."</p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+              <GalleryPanel
+                id="panel-2"
+                opacity={panel2Opacity}
+                gameLabel="Game 2: Easter Hunt"
+                headline="Eggs-traordinary Search"
+                description='"Five eggs are hidden in the Easter Fair scene. Find them all before time runs out. Keep your eyes sharp—some eggs are harder to spot than others."'
+              >
+                <Canvas camera={{ position: [0, 0, 5], fov: 35 }} dpr={[1, 2]}>
+                  <ambientLight intensity={1.5} />
+                  <pointLight position={[10, 10, 10]} intensity={2} color="#ff9a9e" />
+                  <EggModel />
+                  <Environment preset="warehouse" />
+                  <ContactShadows position={[0, -1.2, 0]} opacity={0.6} scale={10} blur={2.5} far={10} />
+                </Canvas>
+              </GalleryPanel>
 
               {/* PANEL 3: ICE EGG */}
-              <motion.div className="gallery-panel" style={{ opacity: panel3Opacity }}>
-                <div className="panel-content">
-                  <div className="panel-card">
-                    <div className="card-visual-bay">
-                      <motion.div
-                        className="gallery-object"
-                        style={{ x: game3X, y: game3Y, rotate: game3Rotate, opacity: game3Opacity }}
-                      >
-                        <Canvas camera={{ position: [0, 0, 5], fov: 35 }}>
-                          <ambientLight intensity={1} />
-                          <pointLight position={[10, 10, 10]} intensity={3} color="#a0d8ef" />
-                          <IceCubeModel />
-                          <Environment preset="night" />
-                          <ContactShadows position={[0, -1.2, 0]} opacity={0.8} scale={10} blur={2} far={10} />
-                        </Canvas>
-                      </motion.div>
-                    </div>
-                    <div className="card-text-area">
-                      <span className="game-label">Game 3: Ice Egg</span>
-                      <h3>Crack Under Pressure</h3>
-                      <p>"Melt the ice blocks to free the Easter eggs inside. But beware—some blocks contain bombs! You have 3 lives and 20 seconds. Choose wisely."</p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+              <GalleryPanel
+                id="panel-3"
+                opacity={panel3Opacity}
+                gameLabel="Game 3: Ice Egg"
+                headline="Crack Under Pressure"
+                description='"Melt the ice blocks to free the Easter eggs inside. But beware—some blocks contain bombs! You have 3 lives and 20 seconds. Choose wisely."'
+              >
+                <Canvas camera={{ position: [0, 0, 5], fov: 35 }} dpr={[1, 2]}>
+                  <ambientLight intensity={1} />
+                  <pointLight position={[10, 10, 10]} intensity={3} color="#a0d8ef" />
+                  <IceCubeModel />
+                  <Environment preset="night" />
+                  <ContactShadows position={[0, -1.2, 0]} opacity={0.8} scale={10} blur={2} far={10} />
+                </Canvas>
+              </GalleryPanel>
 
             </motion.div>
           </div>
